@@ -1,8 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from shortuuid.fields import ShortUUIDField
+from shortuuid.django_fields import ShortUUIDField
 
-# Create your models here.
 
 class User(AbstractUser):
     username = models.CharField(unique=True, max_length=100)
@@ -18,11 +17,11 @@ class User(AbstractUser):
     def __str__(self):
         return self.email
     
-#Salvando 
+#Salvando as informações no Django
     def save(self, *args, **kwargs):
         email_username, mobile = self.email.split("@")
 
-        if self.full_name == "" or self.full_name == None:
+        if self.full_name == "" or self.full_name == None: # se full name for vazio ou nulo
             self.full_name = email_username
 
         if self.username == "" or self.username == None:
@@ -42,19 +41,19 @@ class Profile(models.Model):
     city = models.CharField(max_length=100, null=True, blank=True)
     address = models.CharField(max_length=100, null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)
-    pid = ShortUUIDField(unique=True, Length=10, max_length=20, alphabets= "abcdefghijk")
+    pid = ShortUUIDField(unique=True, length=10, max_length=20, alphabet= "abcdefghijk")
 
     # Representação de Strings dos objetos
     def __str__(self):
         if self.full_name:
             return str(self.full_name)
-        else: str(self.user.full_name)
+        else: 
+            return str(self.user.full_name)
 
 
 
-    #Salvando 
+    #Salvando as informações no Django
     def save(self, *args, **kwargs):
-
         if self.full_name == "" or self.full_name == None:
             self.full_name = self.user.full_name
 
